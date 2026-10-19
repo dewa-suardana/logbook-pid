@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#12304a">
+  <title>Logbook PID | SD Negeri 4 Singapadu Kaler</title>
+  <style>
+    :root { --navy:#12304a; --blue:#176b87; --pale:#edf6fa; --ink:#172b3a; }
+    * { box-sizing: border-box; }
+    body {
+      margin:0; min-height:100vh; font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+      color:var(--ink); background:linear-gradient(135deg,#eaf4f8,#f8fbfd);
+    }
+    header {
+      background:var(--navy); color:white; padding:22px clamp(18px,4vw,48px);
+      display:flex; align-items:center; gap:16px; box-shadow:0 4px 18px #102b3c22;
+    }
+    .logo { width:54px;height:54px;border-radius:14px;background:#ffffff18;display:grid;place-items:center;font-size:27px; }
+    header h1 { margin:0;font-size:clamp(19px,3vw,28px);letter-spacing:.2px; }
+    header p { margin:5px 0 0;color:#d5e8f1;font-size:14px; }
+    main { max-width:980px;margin:clamp(28px,6vw,72px) auto;padding:0 20px; }
+    .welcome {
+      background:white;border:1px solid #dce9ef;border-radius:24px;padding:clamp(24px,5vw,48px);
+      box-shadow:0 14px 40px #15384b10;text-align:center;
+    }
+    .welcome .icon { font-size:48px; }
+    h2 { margin:10px 0;font-size:clamp(23px,4vw,34px); }
+    .welcome p { max-width:620px;margin:0 auto 24px;line-height:1.65;color:#506574; }
+    button {
+      border:0;border-radius:13px;padding:15px 22px;font:inherit;font-weight:700;cursor:pointer;
+      background:var(--blue);color:white;min-height:52px;
+    }
+    button:focus-visible,.close:focus-visible { outline:3px solid #f4b942;outline-offset:3px; }
+    .note { margin:18px auto 0;font-size:13px;color:#637987; }
+    .overlay {
+      position:fixed;inset:0;z-index:10;background:rgba(7,23,35,.72);
+      display:flex;align-items:center;justify-content:center;padding:clamp(8px,2vw,24px);
+    }
+    .modal {
+      width:min(100%,1000px);height:min(94dvh,900px);background:white;border-radius:20px;
+      display:flex;flex-direction:column;overflow:hidden;box-shadow:0 25px 80px #0005;
+    }
+    .modal-head {
+      display:flex;align-items:center;gap:14px;padding:15px 18px;background:var(--navy);color:white;
+      flex-shrink:0;
+    }
+    .modal-head .titles { flex:1;min-width:0; }
+    .modal-head h2 { font-size:clamp(17px,2.5vw,22px);margin:0; }
+    .modal-head p { font-size:13px;margin:4px 0 0;color:#d5e8f1; }
+    .close {
+      border:0;border-radius:12px;width:48px;height:48px;min-width:48px;padding:0;
+      font-size:30px;line-height:1;background:#ffffff1a;color:white;
+    }
+    .form-frame { border:0;width:100%;flex:1;min-height:0;background:#fff; }
+    .modal-foot { padding:9px 15px;text-align:center;font-size:12px;color:#637987;border-top:1px solid #e5edf1; }
+    .hidden { display:none !important; }
+    @media (max-width:600px) {
+      .overlay { padding:0; }
+      .modal { height:100dvh;width:100%;border-radius:0; }
+      .modal-head { padding:12px; }
+      header { padding:16px; }
+      .logo { width:44px;height:44px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" aria-hidden="true">📋</div>
+    <div>
+      <h1>Logbook Pembelajaran PID</h1>
+      <p>SD Negeri 4 Singapadu Kaler</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="welcome">
+      <div class="icon" aria-hidden="true">👩‍🏫</div>
+      <h2>Selamat Datang, Bapak/Ibu Guru</h2>
+      <p>Silakan isi logbook singkat sebelum memulai pembelajaran menggunakan Papan Interaktif Digital (PID). Setelah formulir dikirim, Bapak/Ibu dapat menutup jendela logbook.</p>
+      <button id="openForm" type="button">Buka Logbook Pembelajaran</button>
+      <div class="note">Formulir mencatat nama guru, kelas, mata pelajaran, jam pelajaran, dan materi.</div>
+    </section>
+  </main>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <section class="modal">
+      <div class="modal-head">
+        <div class="titles">
+          <h2 id="modalTitle">Logbook Guru</h2>
+          <p>Isi formulir, tekan Kirim, lalu tutup dengan tombol ×.</p>
+        </div>
+        <button class="close" id="closeForm" type="button" aria-label="Tutup logbook">×</button>
+      </div>
+      <iframe
+        class="form-frame"
+        title="Google Form Logbook Pembelajaran"
+        src="https://docs.google.com/forms/d/e/1FAIpQLSdu-PoaF7XNqiMDi4s2iZh39uvs8fUD93e4FlfeopniuyKMJg/viewform?embedded=true"
+        loading="eager"
+        allowfullscreen>
+        Memuat formulir Google Forms…
+      </iframe>
+      <div class="modal-foot">Jika formulir tidak muncul, pastikan PID terhubung ke internet.</div>
+    </section>
+  </div>
+
+  <script>
+    const overlay = document.getElementById('overlay');
+    const closeButton = document.getElementById('closeForm');
+    const openButton = document.getElementById('openForm');
+
+    function closeForm() {
+      overlay.classList.add('hidden');
+      openButton.focus();
+    }
+    function openForm() {
+      overlay.classList.remove('hidden');
+      closeButton.focus();
+    }
+
+    closeButton.addEventListener('click', closeForm);
+    openButton.addEventListener('click', openForm);
+
+    // Escape can close the pop-up when a physical keyboard is connected.
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !overlay.classList.contains('hidden')) closeForm();
+    });
+  </script>
+</body>
+</html>
